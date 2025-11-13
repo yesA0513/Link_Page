@@ -3,7 +3,7 @@
  * ('최신순' 정렬을 위한 타임스탬프 기능 추가)
  */
 
-// 1. Firebase 설정 (변경 없음)
+// 1. Firebase 설정 (firebase.js 또는 config.js에서 불러옴)
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const linksCollection = db.collection("links"); 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // * ⬇️ [수정됨] ⬇️
+    // * ⬇️ [여기가 수정된 부분입니다] ⬇️
     // * 정렬 기준을 "title" (제목순) 에서 
     // * "createdAt" (생성 시간), "desc" (내림차순 = 최신순)으로 변경
     // ******************************************************
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const linkData = doc.data();
             
             if (change.type === "added") {
-                // [수정됨] createLinkCard가 DOM 순서대로 추가되도록 (항상 맨 뒤)
+                // [수정됨] createLinkCard가 DOM 순서대로 추가되도록
                 createLinkCard(doc.id, linkData.title, linkData.url);
             } 
             else if (change.type === "removed") {
@@ -50,8 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     }, error => {
-        // [중요] 이 'error'에 색인 생성 링크가 포함됩니다.
-        console.error("데이터를 불러오는 데 실패했습니다 (색인 필요):", error);
+        // ******************************************************
+        // * [중요] 코드를 올바르게 수정했다면, F12 콘솔에
+        // * 이 'error' 메시지와 함께 '색인 생성 링크'가 나타납니다.
+        // ******************************************************
+        console.error("데이터를 불러오는 데 실패했습니다 (색인이 필요할 수 있습니다):", error);
         const loadingMessage = linkGrid.querySelector('.loading-message');
         if (loadingMessage) loadingMessage.innerHTML = '오류: Firebase 색인(Index)이 필요합니다. (F12 개발자 콘솔 확인)';
     });
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = document.getElementById('link-title').value;
         const url = document.getElementById('link-url').value;
 
-        // * ⬇️ [수정됨] ⬇️
+        // * ⬇️ [여기가 수정된 부분입니다] ⬇️
         // * 데이터를 저장할 때 'createdAt' (생성 시간) 항목을
         // * Firebase의 서버 시간으로 함께 저장합니다.
         // ******************************************************
@@ -170,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // [J. 파비콘 로드 (Helper 함수)]
     function loadFavicon(card, url) {
-        // ... (이 함수는 변경 없음) ...
         const img = card.querySelector('.card-icon-img');
         if (!img) return;
         try {
@@ -189,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBox.addEventListener('input', performSearch);
     
     function performSearch() {
-        // ... (이 함수는 변경 없음) ...
         const searchTerm = searchBox.value.toLowerCase().trim();
         const allCards = linkGrid.querySelectorAll('.link-card'); 
 

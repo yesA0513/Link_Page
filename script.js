@@ -1,6 +1,6 @@
 /*
  * script.js 파일
- * (추가/삭제 애니메이션 로직 적용됨)
+ * ('최신순' 정렬을 위한 타임스탬프 기능 추가)
  */
 
 // 1. Firebase 설정 (변경 없음)
@@ -26,37 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // [A. (수정됨) 데이터베이스에서 '변경 사항' 읽어오기]
-    linksCollection.orderBy("title")
+    // * ⬇️ [수정됨] ⬇️
+    // * 정렬 기준을 "title" (제목순) 에서 
+    // * "createdAt" (생성 시간), "desc" (내림차순 = 최신순)으로 변경
+    // ******************************************************
+    linksCollection.orderBy("createdAt", "desc")
         .onSnapshot(snapshot => {
         
-        // 로딩 메시지가 있다면 첫 데이터 로드 시 제거
         const loadingMessage = linkGrid.querySelector('.loading-message');
         if (loadingMessage) loadingMessage.remove();
 
-        // [수정됨] 전체를 다시 그리는 대신, '변경분'만 처리
         snapshot.docChanges().forEach(change => {
             const doc = change.doc;
             const linkData = doc.data();
             
-            // [추가됨]
             if (change.type === "added") {
-                // 1. '추가'된 데이터만 카드 생성
+                // [수정됨] createLinkCard가 DOM 순서대로 추가되도록 (항상 맨 뒤)
                 createLinkCard(doc.id, linkData.title, linkData.url);
             } 
-            // [추가됨]
             else if (change.type === "removed") {
-                // 2. '삭제'된 데이터만 카드 삭제
                 deleteLinkCard(doc.id);
             }
-            // (참고: 'modified'는 우리가 수정 기능을 안 만들었으므로 생략)
         });
 
-        // 3. (검색 필터링은 create/delete가 아닌 '검색' 시에만 필요하므로 여기서 제거)
-        // performSearch(); 
-
     }, error => {
-        // ... (에러 처리 부분은 변경 없음) ...
+        // [중요] 이 'error'에 색인 생성 링크가 포함됩니다.
+        console.error("데이터를 불러오는 데 실패했습니다 (색인 필요):", error);
+        const loadingMessage = linkGrid.querySelector('.loading-message');
+        if (loadingMessage) loadingMessage.innerHTML = '오류: Firebase 색인(Index)이 필요합니다. (F12 개발자 콘솔 확인)';
     });
 
 
@@ -74,14 +71,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // [E. 새 링크 '제출' (변경 없음)]
+    // [E. 새 링크 '제출']
     newLinkForm.addEventListener('submit', (e) => {
         e.preventDefault(); 
         const title = document.getElementById('link-title').value;
         const url = document.getElementById('link-url').value;
-        linksCollection.add({ title: title, url: url })
-            .then(() => closeModal())
-            .catch(error => console.error("링크 추가 실패:", error));
+
+        // * ⬇️ [수정됨] ⬇️
+        // * 데이터를 저장할 때 'createdAt' (생성 시간) 항목을
+        // * Firebase의 서버 시간으로 함께 저장합니다.
+        // ******************************************************
+        linksCollection.add({ 
+            title: title, 
+            url: url,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp() // [추가됨]
+        })
+        .then(() => closeModal())
+        .catch(error => console.error("링크 추가 실패:", error));
     });
 
 
@@ -103,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // [G. (수정됨) 링크 카드 생성 (애니메이션 클래스 추가)]
     function createLinkCard(id, title, url) {
         const card = document.createElement('article');
-        // [수정됨] 'card-entering' 클래스를 추가하여 애니메이션 시작 상태로 만듦
         card.className = 'link-card card-entering'; 
         card.dataset.id = id; 
 
@@ -118,15 +123,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
         `;
         
-        linkGrid.appendChild(card);
+        // [수정됨] 항상 '추가' 버튼 뒤, '로딩' 메시지 앞에 오도록
+        const loadingMessage = linkGrid.querySelector('.loading-message');
+        if (loadingMessage) {
+            linkGrid.insertBefore(card, loadingMessage);
+        } else {
+            linkGrid.appendChild(card);
+        }
+        
         setupSpotlight(card);
         loadFavicon(card, url);
 
-        // [수정됨] DOM에 추가된 직후, 'card-entering' 클래스를 제거하여
-        // CSS transition(전환)이 작동하도록 함
         setTimeout(() => {
             card.classList.remove('card-entering');
-        }, 10); // 아주 잠깐(10ms) 딜레이
+        }, 10); 
     }
 
 
@@ -134,14 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteLinkCard(id) {
         const card = linkGrid.querySelector(`.link-card[data-id="${id}"]`);
         if (card) {
-            // [수정됨] 'card-exiting' 클래스를 추가하여 CSS transition(전환)을 발동
             card.classList.add('card-exiting');
-
-            // [수정됨] 애니메이션이 끝난 후(0.3초) DOM에서 실제로 제거
-            // (CSS의 transition 시간 0.3s와 일치해야 함)
             card.addEventListener('transitionend', () => {
                 card.remove();
-            }, { once: true }); // 이벤트가 한 번만 실행되도록
+            }, { once: true });
         }
     }
 
@@ -156,9 +162,15 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.setProperty('--mouse-y', `${y}px`);
         });
     }
+    
+    if (addLinkCard) {
+        setupSpotlight(addLinkCard);
+    }
+
 
     // [J. 파비콘 로드 (Helper 함수)]
     function loadFavicon(card, url) {
+        // ... (이 함수는 변경 없음) ...
         const img = card.querySelector('.card-icon-img');
         if (!img) return;
         try {
@@ -177,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBox.addEventListener('input', performSearch);
     
     function performSearch() {
+        // ... (이 함수는 변경 없음) ...
         const searchTerm = searchBox.value.toLowerCase().trim();
         const allCards = linkGrid.querySelectorAll('.link-card'); 
 

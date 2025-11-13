@@ -1,3 +1,9 @@
+/*
+ * ===================================
+ * style.css (전체 코드 - 모든 호버 효과 적용)
+ * ===================================
+ */
+
 /* * 1. 기본 스타일
  */
 body {
@@ -31,9 +37,6 @@ body {
     color: #ffffff; 
 }
 
-/* * 2. 헤더 폼(삭제됨) 및 검색창
- */
-
 /* 폼 래퍼 스타일 (팝업 내부용) */
 .form-wrapper {
     display: flex;
@@ -52,6 +55,7 @@ body {
     border-radius: 12px;
     color: #ffffff;
     box-sizing: border-box; 
+    transition: all 0.3s ease;
 }
 .form-wrapper input:focus {
     outline: none;
@@ -64,6 +68,8 @@ body {
     gap: 10px;
     margin-top: 10px;
 }
+
+/* [수정됨] 폼 버튼 (추가/취소) */
 .form-wrapper button {
     flex: 1; 
     padding: 14px 25px;
@@ -74,23 +80,30 @@ body {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    
+    /* [수정됨] 호버 효과를 위한 transition과 기본 transform 추가 */
+    transform: translateY(0);
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
+/* '추가' 버튼 */
 .form-wrapper button[type="submit"] {
     background-color: #4A90E2; 
 }
 .form-wrapper button[type="submit"]:hover {
     background-color: #357ABD;
+    transform: translateY(-2px); /* [수정됨] 위로 이동 */
 }
+/* '취소' 버튼 */
 .form-wrapper button[type="button"] {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .form-wrapper button[type="button"]:hover {
     background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px); /* [수정됨] 위로 이동 */
 }
 
-/* 검색창 */
+/* [수정됨] 검색창 */
 .search-wrapper {
     margin: 25px 0 10px;
 }
@@ -107,6 +120,7 @@ body {
     box-sizing: border-box;
     transition: all 0.3s ease;
 }
+
 #search-box:focus {
     outline: none;
     background-color: rgba(255, 255, 255, 0.15);
@@ -138,15 +152,25 @@ body {
     border-radius: 16px; 
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); 
     overflow: hidden; 
-    transition: all 0.3s ease; 
+    
+    /* [수정됨] 'all' 대신 애니메이션이 필요한 속성만 지정 */
+    transition: opacity 0.3s ease, 
+                transform 0.3s ease, 
+                background-color 0.3s ease, 
+                border-color 0.3s ease;
 }
 
-/*
- * ⬇️ [수정된 부분] ⬇️
- * height: 100% 와 box-sizing: border-box 를 추가하여
- * <a> 태그가 카드의 전체 높이를 채우도록 합니다.
- * (display: flex 와 align-items: center 덕분에 내용이 세로 중앙 정렬됩니다.)
- */
+/* [새로 추가됨] 카드 '추가' 시작 상태 */
+.link-card.card-entering {
+    opacity: 0;
+    transform: scale(0.9);
+}
+/* [새로 추가됨] 카드 '삭제' 끝 상태 */
+.link-card.card-exiting {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
 .link-card a {
     text-decoration: none;
     color: inherit; 
@@ -193,7 +217,8 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-/* 카드 삭제(X) 버튼 */
+
+/* [수정됨] 카드 삭제(X) 버튼 */
 .delete-btn {
     position: absolute;
     top: 8px;
@@ -210,6 +235,9 @@ body {
     text-align: center;
     cursor: pointer;
     opacity: 0; 
+    
+    /* [수정됨] 호버 효과를 위한 transform 추가 */
+    transform: scale(1);
     transition: all 0.2s ease;
 }
 .link-card:hover .delete-btn {
@@ -217,16 +245,22 @@ body {
 }
 .delete-btn:hover {
     background-color: rgba(200, 50, 50, 0.8); 
+    transform: scale(1.15); /* [수정됨] 살짝 커짐 */
 }
 
 /* * 4. '새 링크 추가' (+) 카드
  */
+/* [수정됨] '+' 카드 */
 #add-link-card {
     cursor: pointer;
+    /* [수정됨] 스포트라이트 효과를 위해 relative, overflow 추가 */
+    position: relative;
+    overflow: hidden;
 }
 #add-link-card:hover {
     background-color: rgba(255, 255, 255, 0.18); 
     border-color: rgba(255, 255, 255, 0.3);
+    /* [수정됨] translateY 제거, 스포트라이트로 대체 */
 }
 .add-card-content {
     padding: 18px 20px; 
@@ -236,7 +270,7 @@ body {
     justify-content: center;
     text-align: center;
     color: #a0a0a0;
-    min-height: 58px; /* 이 높이 때문에 다른 카드들도 키가 커집니다 */
+    min-height: 58px; 
 }
 .add-card-content span {
     font-size: 2.5rem; 
@@ -272,7 +306,7 @@ body {
 /* 팝업 '숨김' 상태 */
 #modal-overlay.hidden {
     opacity: 0;
-    pointer-events: none; /* 숨겨졌을 때 클릭 방지 */
+    pointer-events: none; 
 }
 /* 팝업창 본체 */
 .modal-content {
@@ -292,7 +326,7 @@ body {
 /* 팝업 '숨김' 상태일 때 팝업창 스타일 */
 #modal-overlay.hidden .modal-content {
     opacity: 0;
-    transform: scale(0.95); /* 살짝 작아지면서 사라짐 */
+    transform: scale(0.95); 
 }
 .modal-content h2 {
     margin: 0 0 10px;
@@ -303,7 +337,8 @@ body {
 
 /* * 6. 스포트라이트 효과
  */
-.link-card::before {
+/* [수정됨] .add-card-content::before -> #add-link-card::before */
+.link-card::before, #add-link-card::before {
     content: "";
     position: absolute;
     left: var(--mouse-x, 50%);
@@ -318,11 +353,9 @@ body {
     transition: opacity 0.3s ease; 
     z-index: 0; 
 }
-.link-card:hover::before {
+/* [수정됨] .add-card-content:hover::before -> #add-link-card:hover::before */
+.link-card:hover::before, #add-link-card:hover::before {
     opacity: 1;
-}
-#add-link-card::before {
-    display: none;
 }
 
 /* * 7. 반응형 디자인
@@ -332,8 +365,12 @@ body {
         grid-template-columns: repeat(3, 1fr); 
         gap: 20px; 
     }
-    .header h1 { font-size: 3rem; }
+    .header h1 { 
+        font-size: 2rem;
+        font-weight: 500;
+    }
 }
+
 @media (min-width: 1024px) {
     .link-grid { 
         grid-template-columns: repeat(4, 1fr); 
@@ -341,6 +378,7 @@ body {
     }
     body { padding: 40px; }
 }
+
 @media (min-width: 1280px) {
     .link-grid {
         grid-template-columns: repeat(5, 1fr);

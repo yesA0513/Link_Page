@@ -1,41 +1,101 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
 /*
  * ===================================
- * style.css (전체 코드 - 모든 호버 효과 적용)
+ * style.css (전체 코드 - 버튼 위치 수정)
  * ===================================
  */
 
 /* * 1. 기본 스타일
  */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #111827; 
-    background-image: 
-        radial-gradient(at 10% 20%, hsla(210, 50%, 40%, 0.3) 0px, transparent 50%),
-        radial-gradient(at 80% 30%, hsla(280, 50%, 40%, 0.3) 0px, transparent 50%),
-        radial-gradient(at 50% 80%, hsla(190, 50%, 40%, 0.3) 0px, transparent 50%);
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    
+    background-color: #1a1a2e; 
     color: #f0f0f0; 
+    background-image: 
+        radial-gradient(at 15% 20%, hsla(300, 70%, 60%, 0.4) 0px, transparent 50%),
+        radial-gradient(at 80% 85%, hsla(180, 60%, 50%, 0.3) 0px, transparent 50%),
+        radial-gradient(at 5% 70%, hsla(230, 70%, 60%, 0.3) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, hsla(30, 80%, 55%, 0.3) 0px, transparent 50%);
+    
     margin: 0;
     padding: 20px;
     line-height: 1.6;
     min-height: 100vh;
+    
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container { 
     width: 100%; 
-    max-width: 1400px; 
+    max-width: 1800px; 
     margin: 0 auto; 
 }
 
 .header {
+    position: relative; 
     text-align: left; 
     margin-bottom: 30px;
 }
 .header h1 { 
-    font-size: 2rem; 
-    font-weight: 500; 
+    font-size: 2.5rem; 
+    font-weight: 400; 
     margin: 0 0 10px; 
     color: #ffffff; 
+    transition: color 0.3s ease;
 }
+
+/* ⬇️ [여기부터 테마 버튼 스타일 수정] ⬇️ */
+.theme-toggle-btn {
+    /* [수정됨] position: absolute 관련 속성 모두 제거 */
+    /* position: absolute; */
+    /* top: 5px; */
+    /* right: 0; */
+    
+    /* [신규] Flex 아이템으로 축소 방지 */
+    flex-shrink: 0; 
+    
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffffae; /* Font Awesome 아이콘 색상 */
+    backdrop-filter: blur(5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    
+    width: 53px;
+    height: 53px;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1; 
+}
+.theme-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* [수정됨] Font Awesome 아이콘 스타일 */
+.theme-toggle-btn i {
+    font-size: 1.25rem; /* 아이콘 크기 (20px) */
+    
+    /* [추가] 아이콘이 전환될 때 튀는 것을 방지 */
+    position: absolute;
+}
+
+/* [수정됨] 아이콘 토글 로직 (Font Awesome) */
+/* 기본 (다크) 상태: 해 보이기, 달 숨기기 */
+.theme-toggle-btn .fa-moon { display: none; }
+.theme-toggle-btn .fa-sun { display: block; }
+
+/* 라이트 모드 상태: 해 숨기기, 달 보이기 */
+body.light-mode .theme-toggle-btn .fa-moon { display: block; }
+body.light-mode .theme-toggle-btn .fa-sun { display: none; }
+/* ⬆️ [테마 버튼 스타일 끝] ⬆️ */
+
 
 /* 폼 래퍼 스타일 (팝업 내부용) */
 .form-wrapper {
@@ -52,7 +112,7 @@ body {
     font-family: inherit;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
+    border-radius: 25px;
     color: #ffffff;
     box-sizing: border-box; 
     transition: all 0.3s ease;
@@ -69,28 +129,26 @@ body {
     margin-top: 10px;
 }
 
-/* [수정됨] 폼 버튼 (추가/취소) */
 .form-wrapper button {
     flex: 1; 
     padding: 14px 25px;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 400;
     font-family: inherit;
     color: #ffffff;
     border: none;
-    border-radius: 12px;
+    border-radius: 25px;
     cursor: pointer;
     
-    /* [수정됨] 호버 효과를 위한 transition과 기본 transform 추가 */
     transform: translateY(0);
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
 /* '추가' 버튼 */
 .form-wrapper button[type="submit"] {
-    background-color: #4A90E2; 
+    background-color: #4a91e2c2; 
 }
 .form-wrapper button[type="submit"]:hover {
-    background-color: #357ABD;
+    background-color: #3579bdd4;
 }
 /* '취소' 버튼 */
 .form-wrapper button[type="button"] {
@@ -101,19 +159,31 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* [수정됨] 검색창 */
+/* ⬇️ [검색창 래퍼 수정] ⬇️ */
 .search-wrapper {
     margin: 25px 0 10px;
+    
+    /* [신규] Flexbox로 자식 요소(input, button) 정렬 */
+    display: flex;
+    align-items: center;
+    gap: 15px; /* input과 button 사이 간격 */
 }
+
+/* ⬇️ [검색창 input 수정] ⬇️ */
 #search-box {
-    width: 100%;
+    /* [수정됨] width: 100% 대신 flex-grow로 너비 확보 */
+    /* width: 100%; */
+    flex-grow: 1; /* 남는 공간 모두 차지 */
+    min-width: 0; /* Flex 아이템의 너비 축소 허용 */
+    
     padding: 14px 20px;
     font-size: 1rem;
     font-family: inherit;
     background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 25px;
     color: #ffffff;
     box-sizing: border-box;
     transition: all 0.3s ease;
@@ -121,122 +191,104 @@ body {
 
 #search-box:focus {
     outline: none;
-    background-color: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
 }
 #search-box::placeholder {
-    color: #a0a0a0;
+    color: #d7d7d7;
     opacity: 1;
+    transition: color 0.3s ease;
 }
 
 /* * 3. 링크 그리드 및 카드
  */
 .link-grid { 
-    /* [1. 수정됨] grid -> flex (모바일 기본 = 세로 1열) */
     display: flex;
     flex-direction: column;
-    /* grid-template-columns: 1fr; (제거) */
-    /* gap: 20px; (제거) */
+    gap: 20px; 
 }
 .loading-message {
     color: #a0a0a0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-align: center;
 }
 .link-card {
+    box-sizing: border-box; 
     position: relative; 
     background-color: rgba(255, 255, 255, 0.1); 
-    backdrop-filter: blur(15px) saturate(130%); 
+    backdrop-filter: blur(5px); 
     border: 1px solid rgba(255, 255, 255, 0.15); 
-    border-radius: 16px; 
+    border-radius: 35px; 
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); 
     overflow: hidden; 
 
-    /* [2. 수정됨] flex 레이아웃을 위한 기본값 추가 */
-    flex-grow: 0;   /* 기본적으로 늘어나지 않음 */
-    flex-shrink: 0; /* 기본적으로 줄어들지 않음 */
+    flex-grow: 0;   
+    flex-shrink: 0; 
 
-    margin-bottom: 20px;
     padding: 18px 20px;
     
-    /* [3. 수정됨] 애니메이션 속성 대거 추가 (너비, 여백 등) */
     transition: opacity 0.3s ease, 
                 transform 0.3s ease, 
                 background-color 0.3s ease, 
                 border-color 0.3s ease,
+                box-shadow 0.3s ease,
                 max-height 0.3s ease,
-                min-width 0.3s ease,  /* [추가] */
-                max-width 0.3s ease,  /* [추가] */
-                padding 0.3s ease,    /* [단축] */
-                margin 0.3s ease;     /* [수정] */
+                min-width 0.3s ease,
+                max-width 0.3s ease,
+                padding 0.3s ease;
     
-    /* [4. 수정됨] max-height/width 기본값 (충분히 큰 값) */
     max-height: 150px; 
-    max-width: 600px;  /* [추가] */
-    min-width: 0;      /* [추가] (애니메이션을 위해) */
+    max-width: 600px;  
+    min-width: 0;      
 }
 
-/* [5. 수정됨] 카드 '추가'/'삭제' 상태 (너비/여백/min-width 제어) */
+/* ... (card-entering, card-exiting 스타일은 변경 없음) ... */
 .link-card.card-entering {
     opacity: 0;
     transform: scale(0.9);
     max-height: 0;
-    max-width: 0;      /* [추가] */
-    min-width: 0;      /* [추가] */
+    max-width: 0;
+    min-width: 0;
     padding-top: 0;
     padding-bottom: 0;
-    margin-top: 0;     /* [추가] */
-    margin-bottom: 0;
-    margin-left: 0;    /* [추가] */
-    margin-right: 0;   /* [추가] */
 }
 .link-card.card-exiting {
     opacity: 0;
     transform: scale(0.9);
     max-height: 0;
-    max-width: 0;      /* [추가] */
-    min-width: 0;      /* [추가] */
+    max-width: 0;
+    min-width: 0;
     padding-top: 0;
     padding-bottom: 0;
-    margin-top: 0;     /* [추가] */
-    margin-bottom: 0;
-    margin-left: 0;    /* [추가] */
-    margin-right: 0;   /* [추가] */
 }
-
-/* [6. 수정됨] 카드 '추가'/'삭제' 상태 (높이/패딩/마진 제어) */
 .link-card.card-entering {
     opacity: 0;
     transform: scale(0.9);
-    /* [추가됨] */
     max-height: 0;
     padding-top: 0;
     padding-bottom: 0;
-    margin-bottom: 0;
 }
 .link-card.card-exiting {
     opacity: 0;
     transform: scale(0.9);
-    /* [추가됨] */
     max-height: 0;
     padding-top: 0;
     padding-bottom: 0;
-    margin-bottom: 0;
 }
 
-/* [7. 수정됨] <a> 태그에서 padding 제거 */
+
 .link-card a {
     text-decoration: none;
     color: inherit; 
     display: flex;
     align-items: center;
-    /* padding: 18px 20px; */ /* [제거] */
     position: relative;
     z-index: 1; 
     
     height: 100%; 
     box-sizing: border-box; 
+    min-height: 58px;
 }
 
 /* 카드 아이콘 (파비콘) */
@@ -245,8 +297,9 @@ body {
     height: 24px; 
     margin-right: 15px; 
     flex-shrink: 0; 
-    border-radius: 4px; 
+    border-radius: 50%; 
     background-color: rgba(255, 255, 255, 0.1); 
+    transition: background-color 0.3s ease;
 }
 /* 카드 텍스트 영역 */
 .card-content {
@@ -255,29 +308,31 @@ body {
 }
 /* 카드 제목 */
 .card-content h2 { 
-    font-size: 1.1rem; 
-    font-weight: 600; 
+    font-size: 1rem; 
+    font-weight: 400; 
     margin: 0 0 4px; 
     color: #ffffff; 
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: color 0.3s ease;
 }
 /* 카드 URL */
 .card-url { 
-    font-size: 0.85rem; 
-    color: #d0d0d0; 
+    font-size: 0.8rem; 
+    color: #a2a2a2; 
     margin: 0; 
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: color 0.3s ease;
 }
 
 /* [수정됨] 카드 삭제(X) 버튼 */
 .delete-btn {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 17px;
+    right: 20px;
     z-index: 2; 
     background-color: rgba(0, 0, 0, 0.3);
     color: #ffffff;
@@ -291,7 +346,6 @@ body {
     cursor: pointer;
     opacity: 0; 
     
-    /* [수정됨] 호버 효과를 위한 transform 추가 */
     transform: scale(1);
     transition: all 0.2s ease;
 }
@@ -300,46 +354,58 @@ body {
 }
 .delete-btn:hover {
     background-color: rgba(200, 50, 50, 0.8); 
-    transform: scale(1.15); /* [수정됨] 살짝 커짐 */
+    transform: scale(1.15); 
 }
 
 /* * 4. '새 링크 추가' (+) 카드
  */
 #add-link-card {
+    box-sizing: border-box; 
     cursor: pointer;
     position: relative;
     overflow: hidden;
     padding: 18px 20px;
-    margin-bottom: 20px;
 
-    /* [6. 추가됨] flex 레이아웃을 위한 기본값 추가 */
     flex-grow: 0;
     flex-shrink: 0;
+    
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 35px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease, 
+                transform 0.3s ease, 
+                background-color 0.3s ease, 
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
 }
 #add-link-card:hover {
     background-color: rgba(255, 255, 255, 0.18); 
     border-color: rgba(255, 255, 255, 0.3);
 }
 .add-card-content {
-    /* padding: 18px 20px; */ /* [9. 제거] 부모(#add-link-card)로 이동됨 */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #a0a0a0;
-    min-height: 58px; /* (기존 값 유지, 내부 콘텐츠의 최소 높이) */
+    color: #ffffff;
+    min-height: 58px;
+    z-index: 1;
 }
 .add-card-content span {
     font-size: 2.5rem; 
-    font-weight: 300;
+    font-weight: 100;
     line-height: 1;
 }
 .add-card-content p {
-    font-size: 1.1rem; 
-    font-weight: 600;
+    font-size: 1rem; 
+    font-weight: 400;
     margin: 4px 0 0;
-    color: #d0d0d0;
+    color: #ffffff;
+    transition: color 0.3s ease;
 }
 
 /* * 5. 팝업(모달) 스타일
@@ -351,7 +417,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px); 
+    backdrop-filter: blur(3px); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -361,16 +427,14 @@ body {
     pointer-events: auto;
     transition: opacity 0.3s ease-out;
 }
-/* 팝업 '숨김' 상태 */
 #modal-overlay.hidden {
     opacity: 0;
     pointer-events: none; 
 }
-/* 팝업창 본체 */
 .modal-content {
     background-color: rgba(30, 41, 59, 0.8); 
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
+    border-radius: 35px;
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
     padding: 25px 30px;
     width: 90%; 
@@ -379,9 +443,8 @@ body {
     
     opacity: 1;
     transform: scale(1);
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease, border-color 0.1s ease;
 }
-/* 팝업 '숨김' 상태일 때 팝업창 스타일 */
 #modal-overlay.hidden .modal-content {
     opacity: 0;
     transform: scale(0.95); 
@@ -390,12 +453,12 @@ body {
     margin: 0 0 10px;
     color: #ffffff;
     text-align: center;
-    font-weight: 600;
+    font-weight: 400;
+    transition: color 0.3s ease;
 }
 
 /* * 6. 스포트라이트 효과
  */
-/* [수정됨] .add-card-content::before -> #add-link-card::before */
 .link-card::before, #add-link-card::before {
     content: "";
     position: absolute;
@@ -411,7 +474,6 @@ body {
     transition: opacity 0.3s ease; 
     z-index: 0; 
 }
-/* [수정됨] .add-card-content:hover::before -> #add-link-card:hover::before */
 .link-card:hover::before, #add-link-card:hover::before {
     opacity: 1;
 }
@@ -422,46 +484,172 @@ body {
     .link-grid { 
         flex-direction: row;   
         flex-wrap: wrap;     
-        margin: -10px; 
     }
-    
-    /* [9. 수정됨] .link-card가 flex 아이템이 되도록 설정 */
     .link-card {
-        margin: 10px; 
-        
-        /* [수정] 1 -> 0 (카드가 불필요하게 늘어나지 않도록) */
         flex-grow: 0;   
-        
         flex-shrink: 1; 
-        flex-basis: calc(33.333% - 20px); 
-        min-width: 250px; 
+        flex-basis: calc((100% - 40px) / 3); 
     }
     #add-link-card {
-        margin: 10px;
-        
-        /* [수정] 1 -> 0 (카드가 불필요하게 늘어나지 않도록) */
         flex-grow: 0;   
-        
         flex-shrink: 1;
-        flex-basis: calc(33.333% - 20px);
-        min-width: 250px;
+        flex-basis: calc((100% - 40px) / 3);
     }
 }
 
 @media (min-width: 1024px) {
-/* [10. 수정됨] 4열 기준으로 flex-basis 변경 */
     .link-card, #add-link-card {
-        /* 4열 기준 (25%) 에서 여백(20px) 뺀 값 */
-        flex-basis: calc(25% - 20px);
+        flex-basis: calc((100% - 60px) / 4);
     }
-    
     body { padding: 40px; }
 }
 
 @media (min-width: 1280px) {    
-    /* [11. 수정됨] 5열 기준으로 flex-basis 변경 */
     .link-card, #add-link-card {
-        /* 5열 기준 (20%) 에서 여백(20px) 뺀 값 */
-        flex-basis: calc(20% - 20px);
+        flex-basis: calc((100% - 80px) / 5);
     }
+}
+
+/*
+ * ===================================
+ * 8. ☀️ 라이트 모드 스타일 ☀️
+ * ===================================
+ */
+
+/* ⬇️ [라이트 모드 배경 디자인 수정] ⬇️ */
+body.light-mode {
+    background-color: #ffffff; /* [수정] 순백색 배경 */
+    color: #1a1a2e; 
+    
+    /* [수정] '파스텔 오로라' 배경 */
+    background-image: 
+        /* 좌상단 (산뜻한 하늘색) */
+        radial-gradient(at 10% 20%, hsla(210, 100%, 85%, 0.65) 0px, transparent 50%),
+        /* 우상단 (연보라색) */
+        radial-gradient(at 80% 10%, hsla(300, 100%, 90%, 0.6) 0px, transparent 50%),
+        /* 우하단 (민트색) */
+        radial-gradient(at 70% 80%, hsla(160, 100%, 85%, 0.5) 0px, transparent 50%),
+        /* 좌하단 (옅은 복숭아색) */
+        radial-gradient(at 20% 90%, hsla(40, 100%, 85%, 0.6) 0px, transparent 50%);
+}
+/* ⬆️ [배경 디자인 수정 끝] ⬆️ */
+
+
+body.light-mode .header h1 {
+    color: #1a1a2e;
+}
+
+/* 라이트 모드 테마 버튼 */
+body.light-mode .theme-toggle-btn {
+    color: rgba(0, 0, 0, 0.7); /* SVG 색상 변경 */
+    border-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+body.light-mode .theme-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* 라이트 모드 검색창 */
+body.light-mode #search-box {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 0, 0, 0.05);
+    color: #bcbcbc;
+    backdrop-filter: blur(5px);
+    /* [추가] 라이트 모드에 어울리는 부드러운 그림자 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+body.light-mode #search-box:focus {
+    background-color: rgba(255, 255, 255, 0.45);
+    border-color: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+body.light-mode #search-box::placeholder {
+    color: #8f8f8f;
+}
+
+body.light-mode .add-card-content span {
+    color: #1a1a2e;
+}
+
+/* 라이트 모드 카드 */
+body.light-mode .link-card,
+body.light-mode #add-link-card {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+body.light-mode #add-link-card:hover {
+    background-color: rgba(255, 255, 255, 0.18); 
+}
+
+/* 라이트 모드 카드 텍스트 */
+body.light-mode .card-content h2,
+body.light-mode .add-card-content p {
+    color: #1a1a2e;
+}
+body.light-mode .card-url {
+    color: #555555;
+}
+body.light-mode .card-icon-img {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 라이트 모드 삭제 버튼 */
+body.light-mode .delete-btn {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #555;
+}
+body.light-mode .delete-btn:hover {
+    background-color: #e04444;
+    color: #ffffff;
+}
+
+/* 라이트 모드 스포트라이트 */
+body.light-mode .link-card::before, body.light-mode #add-link-card::before {
+    background: radial-gradient( ellipse, rgba(255, 255, 255, 0.6) 0%, transparent 70% );
+}
+
+/* 라이트 모드 팝업(모달) */
+body.light-mode #modal-overlay {
+    background-color: rgba(185, 185, 185, 0.1);
+}
+
+body.light-mode .modal-content {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+body.light-mode .modal-content h2 {
+    color: #1a1a2e;
+}
+
+/* 라이트 모드 팝업 폼 */
+body.light-mode .form-wrapper input {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 0, 0, 0.05);
+    color: #1a1a2e;
+}
+body.light-mode .form-wrapper input:focus {
+    border-color: #a0a0a0;
+}
+
+body.light-mode .form-wrapper button[type="button"] {
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+body.light-mode .form-wrapper button[type="button"]:hover {
+    background-color: #d0d0d0;
+}
+
+/* 라이트 모드 '추가' 버튼 (기존과 동일하게 유지) */
+body.light-mode .form-wrapper button[type="submit"] {
+    background-color: #5f9fe9e6; 
+    border-color: rgba(0, 0, 0, 0.05);
+    color: #000000;
+}
+body.light-mode .form-wrapper button[type="submit"]:hover {
+    background-color: #3286da;
 }

@@ -216,4 +216,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ⬇️ [여기부터 아래 코드를 추가해 주세요] ⬇️
+
+    // [M. 테마 토글 기능]
+    const themeToggleBtn = document.getElementById('theme-toggle');
+
+    /**
+* 테마를 설정하고 localStorage에 저장하는 함수
+     * @param {string} theme - 'dark' 또는 'light'
+     */
+    function setTheme(theme) {
+        if (theme === 'light') {
+            document.body.classList.add('light-mode');
+            localStorage.setItem('theme', 'light');
+        } else {
+            // 기본은 다크 모드
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // [N. 테마 토글 버튼 클릭 이벤트]
+    themeToggleBtn.addEventListener('click', () => {
+        // 현재 라이트 모드인지 확인
+        const isLightMode = document.body.classList.contains('light-mode');
+        // 테마를 반대로 설정
+        setTheme(isLightMode ? 'dark' : 'light');
+    });
+
+    // [O. 페이지 로드 시 저장된 테마 적용]
+    // 저장된 값이 없으면 기본 'dark'
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+
 }); // DOMContentLoaded 끝

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Link Hub</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="stylesheet" href="style.css">
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -14,14 +17,18 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-
     <div class="container">
         
         <header class="header">
             <h1>Link Hub</h1>
-
+            
             <div class="search-wrapper">
                 <input type="text" id="search-box" placeholder="✨ 제목이나 주소로 검색">
+                
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fa-solid fa-sun"></i>
+                    <i class="fa-solid fa-moon"></i>
+                </button>
             </div>
         </header>
 
@@ -40,8 +47,8 @@
         <div class="modal-content">
             <h2>새 링크 추가</h2>
             <form id="new-link-form" class="form-wrapper">
-                <input type="text" id="link-title" placeholder="제목 (예: 구글)" required>
-                <input type="url" id="link-url" placeholder="URL (예: https://...)" required>
+                <input type="text" id="link-title" placeholder="제목" required>
+                <input type="url" id="link-url" placeholder="URL" required>
                 
                 <div class="form-buttons">
                     <button type="button" id="cancel-add-btn">취소</button>

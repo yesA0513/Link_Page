@@ -133,9 +133,11 @@ body {
 /* * 3. 링크 그리드 및 카드
  */
 .link-grid { 
-    display: grid; 
-    grid-template-columns: 1fr; 
-    gap: 20px; 
+    /* [1. 수정됨] grid -> flex (모바일 기본 = 세로 1열) */
+    display: flex;
+    flex-direction: column;
+    /* grid-template-columns: 1fr; (제거) */
+    /* gap: 20px; (제거) */
 }
 .loading-message {
     color: #a0a0a0;
@@ -150,31 +152,86 @@ body {
     border-radius: 16px; 
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); 
     overflow: hidden; 
+
+    /* [2. 수정됨] flex 레이아웃을 위한 기본값 추가 */
+    flex-grow: 0;   /* 기본적으로 늘어나지 않음 */
+    flex-shrink: 0; /* 기본적으로 줄어들지 않음 */
+
+    margin-bottom: 20px;
+    padding: 18px 20px;
     
-    /* [수정됨] 'all' 대신 애니메이션이 필요한 속성만 지정 */
+    /* [3. 수정됨] 애니메이션 속성 대거 추가 (너비, 여백 등) */
     transition: opacity 0.3s ease, 
                 transform 0.3s ease, 
                 background-color 0.3s ease, 
-                border-color 0.3s ease;
+                border-color 0.3s ease,
+                max-height 0.3s ease,
+                min-width 0.3s ease,  /* [추가] */
+                max-width 0.3s ease,  /* [추가] */
+                padding 0.3s ease,    /* [단축] */
+                margin 0.3s ease;     /* [수정] */
+    
+    /* [4. 수정됨] max-height/width 기본값 (충분히 큰 값) */
+    max-height: 150px; 
+    max-width: 600px;  /* [추가] */
+    min-width: 0;      /* [추가] (애니메이션을 위해) */
 }
 
-/* [새로 추가됨] 카드 '추가' 시작 상태 */
+/* [5. 수정됨] 카드 '추가'/'삭제' 상태 (너비/여백/min-width 제어) */
 .link-card.card-entering {
     opacity: 0;
     transform: scale(0.9);
+    max-height: 0;
+    max-width: 0;      /* [추가] */
+    min-width: 0;      /* [추가] */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;     /* [추가] */
+    margin-bottom: 0;
+    margin-left: 0;    /* [추가] */
+    margin-right: 0;   /* [추가] */
 }
-/* [새로 추가됨] 카드 '삭제' 끝 상태 */
 .link-card.card-exiting {
     opacity: 0;
     transform: scale(0.9);
+    max-height: 0;
+    max-width: 0;      /* [추가] */
+    min-width: 0;      /* [추가] */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;     /* [추가] */
+    margin-bottom: 0;
+    margin-left: 0;    /* [추가] */
+    margin-right: 0;   /* [추가] */
 }
 
+/* [6. 수정됨] 카드 '추가'/'삭제' 상태 (높이/패딩/마진 제어) */
+.link-card.card-entering {
+    opacity: 0;
+    transform: scale(0.9);
+    /* [추가됨] */
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+.link-card.card-exiting {
+    opacity: 0;
+    transform: scale(0.9);
+    /* [추가됨] */
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+/* [7. 수정됨] <a> 태그에서 padding 제거 */
 .link-card a {
     text-decoration: none;
     color: inherit; 
     display: flex;
     align-items: center;
-    padding: 18px 20px; 
+    /* padding: 18px 20px; */ /* [제거] */
     position: relative;
     z-index: 1; 
     
@@ -248,27 +305,30 @@ body {
 
 /* * 4. '새 링크 추가' (+) 카드
  */
-/* [수정됨] '+' 카드 */
 #add-link-card {
     cursor: pointer;
-    /* [수정됨] 스포트라이트 효과를 위해 relative, overflow 추가 */
     position: relative;
     overflow: hidden;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+
+    /* [6. 추가됨] flex 레이아웃을 위한 기본값 추가 */
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 #add-link-card:hover {
     background-color: rgba(255, 255, 255, 0.18); 
     border-color: rgba(255, 255, 255, 0.3);
-    /* [수정됨] translateY 제거, 스포트라이트로 대체 */
 }
 .add-card-content {
-    padding: 18px 20px; 
+    /* padding: 18px 20px; */ /* [9. 제거] 부모(#add-link-card)로 이동됨 */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: #a0a0a0;
-    min-height: 58px; 
+    min-height: 58px; /* (기존 값 유지, 내부 콘텐츠의 최소 높이) */
 }
 .add-card-content span {
     font-size: 2.5rem; 
@@ -360,26 +420,48 @@ body {
  */
 @media (min-width: 768px) {
     .link-grid { 
-        grid-template-columns: repeat(3, 1fr); 
-        gap: 20px; 
+        flex-direction: row;   
+        flex-wrap: wrap;     
+        margin: -10px; 
     }
-    .header h1 { 
-        font-size: 2rem;
-        font-weight: 500;
+    
+    /* [9. 수정됨] .link-card가 flex 아이템이 되도록 설정 */
+    .link-card {
+        margin: 10px; 
+        
+        /* [수정] 1 -> 0 (카드가 불필요하게 늘어나지 않도록) */
+        flex-grow: 0;   
+        
+        flex-shrink: 1; 
+        flex-basis: calc(33.333% - 20px); 
+        min-width: 250px; 
+    }
+    #add-link-card {
+        margin: 10px;
+        
+        /* [수정] 1 -> 0 (카드가 불필요하게 늘어나지 않도록) */
+        flex-grow: 0;   
+        
+        flex-shrink: 1;
+        flex-basis: calc(33.333% - 20px);
+        min-width: 250px;
     }
 }
 
 @media (min-width: 1024px) {
-    .link-grid { 
-        grid-template-columns: repeat(4, 1fr); 
-        gap: 20px; 
+/* [10. 수정됨] 4열 기준으로 flex-basis 변경 */
+    .link-card, #add-link-card {
+        /* 4열 기준 (25%) 에서 여백(20px) 뺀 값 */
+        flex-basis: calc(25% - 20px);
     }
+    
     body { padding: 40px; }
 }
 
-@media (min-width: 1280px) {
-    .link-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 20px;
+@media (min-width: 1280px) {    
+    /* [11. 수정됨] 5열 기준으로 flex-basis 변경 */
+    .link-card, #add-link-card {
+        /* 5열 기준 (20%) 에서 여백(20px) 뺀 값 */
+        flex-basis: calc(20% - 20px);
     }
 }

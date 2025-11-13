@@ -1,6 +1,7 @@
 /*
  * script.js 파일
  * ('최신순' 정렬을 위한 타임스탬프 기능 추가)
+ * [수정] 새 항목 추가 시 정확한 DOM 위치에 삽입
  */
 
 // 1. Firebase 설정 (firebase.js 또는 config.js에서 불러옴)
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newLinkForm.reset();
     }
 
+    // [A. (수정됨) 링크 불러오기 (Read)]
     linksCollection.orderBy("createdAt", "desc")
         .onSnapshot(snapshot => {
         
@@ -36,8 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const linkData = doc.data();
             
             if (change.type === "added") {
-                // [수정됨] createLinkCard가 DOM 순서대로 추가되도록
-                createLinkCard(doc.id, linkData.title, linkData.url);
+                // * ⬇️ [여기가 1번 수정된 부분입니다] ⬇️
+                // createLinkCard에 'newIndex'를 전달하여
+                // DOM상의 정확한 위치를 지정할 수 있도록 합니다.
+                createLinkCard(doc.id, linkData.title, linkData.url, change.newIndex);
             } 
             else if (change.type === "removed") {
                 deleteLinkCard(doc.id);
@@ -65,20 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalOverlay) closeModal();
     });
 
-    // [E. 새 링크 '제출']
+    // [E. 새 링크 '제출' (변경 없음)]
     newLinkForm.addEventListener('submit', (e) => {
         e.preventDefault(); 
         const title = document.getElementById('link-title').value;
         const url = document.getElementById('link-url').value;
 
-        // * ⬇️ [여기가 수정된 부분입니다] ⬇️
-        // * 데이터를 저장할 때 'createdAt' (생성 시간) 항목을
-        // * Firebase의 서버 시간으로 함께 저장합니다.
-        // ******************************************************
         linksCollection.add({ 
             title: title, 
             url: url,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp() // [추가됨]
+            createdAt: firebase.firestore.FieldValue.serverTimestamp() 
         })
         .then(() => closeModal())
         .catch(error => console.error("링크 추가 실패:", error));
@@ -100,8 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     
-    // [G. (수정됨) 링크 카드 생성 (애니메이션 클래스 추가)]
-    function createLinkCard(id, title, url) {
+    // * ⬇️ [여기가 2번 수정된 부분입니다] ⬇️
+    // [G. (수정됨) 링크 카드 생성 (정확한 위치에 삽입)]
+    function createLinkCard(id, title, url, index) { // 'index' 인자 추가
         const card = document.createElement('article');
         card.className = 'link-card card-entering'; 
         card.dataset.id = id; 
@@ -117,24 +118,29 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
         `;
         
-        // [수정됨] 항상 '추가' 버튼 뒤, '로딩' 메시지 앞에 오도록
-        const loadingMessage = linkGrid.querySelector('.loading-message');
-        if (loadingMessage) {
-            linkGrid.insertBefore(card, loadingMessage);
-        } else {
-            linkGrid.appendChild(card);
-        }
+        // [수정됨] 'index'를 기반으로 정확한 위치에 카드를 삽입합니다.
+        // '#add-link-card'가 항상 0번째 자식(child)이므로,
+        // 데이터 인덱스 0 (newIndex === 0)은 DOM의 1번째 위치(children[1])에 와야 합니다.
+        // 즉, (index + 1) 번째 자식 노드 *앞에* 삽입하면 됩니다.
+        
+        // (index + 1) 번째에 해당하는 자식 노드를 찾습니다.
+        const targetNode = linkGrid.children[index + 1]; 
+        
+        // targetNode가 있으면(undefined가 아니면) 그 앞에 삽입하고 (insertBefore),
+        // 없으면(null 또는 undefined) 맨 뒤에 추가합니다 (appendChild와 동일하게 동작).
+        linkGrid.insertBefore(card, targetNode || null);
         
         setupSpotlight(card);
         loadFavicon(card, url);
 
+        // 애니메이션을 위한 타이밍 (변경 없음)
         setTimeout(() => {
             card.classList.remove('card-entering');
         }, 10); 
     }
 
 
-    // [H. (신규) 링크 카드 삭제 (애니메이션 적용)]
+    // [H. (신규) 링크 카드 삭제 (애니메이션 적용) (변경 없음)]
     function deleteLinkCard(id) {
         const card = linkGrid.querySelector(`.link-card[data-id="${id}"]`);
         if (card) {
@@ -146,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // [I. 스포트라이트 설정 (Helper 함수)]
+    // [I. 스포트라이트 설정 (Helper 함수) (변경 없음)]
     function setupSpotlight(card) {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
@@ -162,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // [J. 파비콘 로드 (Helper 함수)]
+    // [J. 파비콘 로드 (Helper 함수) (변경 없음)]
     function loadFavicon(card, url) {
         const img = card.querySelector('.card-icon-img');
         if (!img) return;
@@ -171,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=24`;
             img.src = faviconUrl;
             img.onerror = () => {
-                img.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2QwZDBkMCIgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0zLjkgMTIuODVjMC0yLjYxIDEuOTctNC44MyA0LjU0LTUuMTlWMTAuNUg3LjI5Yy0uNDIgMC0uNzUuMzQtLjc1Ljc1cy4zMy43NS43NS43NWgxLjE1djEuMjVoLTEuMTljLS40MiAwLS43NS4zNC0uNzUuNzVzLjMzLjc1Ljc1Ljc1aDEuMTl2MS4yNUg3LjI5Yy0uNDIgMC0uNzUuMzQtLjc1Ljc1cy4zMy43NS43NS43NWgxLjE1di4xOUM1Ljg3IDE3LjY4IDMuOSAxNS40NiAzLjkgMTIuODV6TTEyLjUgNy42NnYxLjI1aDEuMTljLjQyIDAgLjc1LS4zNC43NS0uNzVzLS4zMy0uNzUtLjc1LS43NWgtMS4xOXptMCAxMC41aDEuMTljLjQyIDAgLjc1LS43NS43NS0uNzVzLS4zMy0uNzUtLjc1LS43NWgtMS4xOXYtMS4yNWgxLjE5Yy40IgMC0uNzUuNzUuNzV0Ljc1cy0uMzMtLjc1LS43NS0uNzVoLTEuMTl2LTEuMjVoMS4xOWMuNDIgMCAuNzUtLjM0Ljc1LS4zNXMzMy0uNzUtLjc1LS43NWgtMS4xOVY3LjY1YzIuNTcuMzYgNC41NCAyLjU4IDQuNTQgNS4xOXMtMS45NyA0LjgzLTQuNTQgNS4xOVYxOC4xNXpNMTAuODUgMTAuNWgtMS4xOUM5LjI0IDEwLjUgOSAxMC44NCA5IDExLjI1M3MtLjMzLjc1LS43NS43NWgxLjE5di0xLjI1ek0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDhzLTMuNTkgOC04IDh6Ii8+PC9zdmc+";
+                img.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2QwZDBkMCIgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ0Ik0zLjkgMTIuODVjMC0yLjYxIDEuOTctNC44MyA0LjU0LTUuMTlWMTAuNUg3LjI5Yy0uNDIgMC0uNzUuMzQtLjc1Ljc1cy4zMy43NS43NS43NWgxLjE1djEuMjVoLTEuMTljLS40MiAwLS43NS4zNC0uNzUuNzVzLjMzLjc1Ljc1Ljc1aDEuMTl2MS4yNUg3LjI5Yy0uNDIgMC0uNzUuMzQtLjc1Ljc1cy4zMy43NS43NS43NWgxLjE1di4xOUM1Ljg3IDE3LjY4IDMuOSAxNS40NiAzLjkgMTIuODV6TTEyLjUgNy42NnYxLjI1aDEuMTljLjQyIDAgLjc1LS4zNC43NS0uNzVzLS4zMy0uNzUtLjc1LS43NWgtMS4xOXptMCAxMC41aDEuMTljLjQyIDAgLjc1LS43NS43NS0uNzVzLS4zMy0uNzUtLjc1LS43NWgtMS4xOXYtMS4yNWgxLjE5Yy40IgMC0uNzUuNzUuNzV0Ljc1cy0uMzMtLjc1LS43NS0uNzVoLTEuMTl2LTEuMjVoMS4xOWMuNDIgMCAuNzUtLjM0Ljc1LS4zNXMzMy0uNzUtLjc1LS43NWgtMS4xOVY3LjY1YzIuNTcuMzYgNC41NCAyLjU4IDQuNTQgNS4xOXMtMS45NyA0LjgzLTQuNTQgNS4xOVYxOC4xNXpNMTAuODUgMTAuNWgtMS4xOUM5LjI0IDEwLjUgOSAxMC44NCA5IDExLjI1M3MtLjMzLjc1LS43NS43NWgxLjE5di0xLjI1ek0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDhzLTMuNTkgOC04IDh6Ii8+PC9zdmc+";
             };
         } catch (error) {
             img.onerror();

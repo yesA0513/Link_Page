@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Hub</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script src="firebase.js"></script>
+
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header class="header">
+            <h1>Link Hub</h1>
+
+            <div class="search-wrapper">
+                <input type="text" id="search-box" placeholder="✨ 제목이나 주소로 검색">
+            </div>
+        </header>
+
+        <main class="link-grid" id="link-grid">
+            
+            <article class="link-card" id="add-link-card">
+                <div class="add-card-content">
+                    <span>+</span>
+                    <p>새 링크 추가</p>
+                </div>
+            </article>
+
+            <p class="loading-message">링크를 불러오는 중...</p>
+
+        </main> </div> <div id="modal-overlay" class="hidden">
+        <div class="modal-content">
+            <h2>새 링크 추가</h2>
+            <form id="new-link-form" class="form-wrapper">
+                <input type="text" id="link-title" placeholder="제목 (예: 구글)" required>
+                <input type="url" id="link-url" placeholder="URL (예: https://...)" required>
+                
+                <div class="form-buttons">
+                    <button type="button" id="cancel-add-btn">취소</button>
+                    <button type="submit">추가</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script src="script.js" defer></script>
+
+</body>
+</html>

@@ -91,7 +91,6 @@ body {
 }
 .form-wrapper button[type="submit"]:hover {
     background-color: #357ABD;
-    transform: translateY(-2px); /* [수정됨] 위로 이동 */
 }
 /* '취소' 버튼 */
 .form-wrapper button[type="button"] {
@@ -100,7 +99,6 @@ body {
 }
 .form-wrapper button[type="button"]:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px); /* [수정됨] 위로 이동 */
 }
 
 /* [수정됨] 검색창 */

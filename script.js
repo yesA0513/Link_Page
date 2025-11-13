@@ -25,11 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         newLinkForm.reset();
     }
 
-
-    // * ⬇️ [여기가 수정된 부분입니다] ⬇️
-    // * 정렬 기준을 "title" (제목순) 에서 
-    // * "createdAt" (생성 시간), "desc" (내림차순 = 최신순)으로 변경
-    // ******************************************************
     linksCollection.orderBy("createdAt", "desc")
         .onSnapshot(snapshot => {
         
@@ -50,10 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     }, error => {
-        // ******************************************************
-        // * [중요] 코드를 올바르게 수정했다면, F12 콘솔에
-        // * 이 'error' 메시지와 함께 '색인 생성 링크'가 나타납니다.
-        // ******************************************************
         console.error("데이터를 불러오는 데 실패했습니다 (색인이 필요할 수 있습니다):", error);
         const loadingMessage = linkGrid.querySelector('.loading-message');
         if (loadingMessage) loadingMessage.innerHTML = '오류: Firebase 색인(Index)이 필요합니다. (F12 개발자 콘솔 확인)';
